@@ -5,3 +5,7 @@
 target/
 .DS_Store
 .gitattributes
+applogs/
+.settings
+.metals
+xxl-job-admin/applogs/
