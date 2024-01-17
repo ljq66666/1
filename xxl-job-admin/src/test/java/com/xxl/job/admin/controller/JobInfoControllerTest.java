@@ -1,6 +1,8 @@
 package com.xxl.job.admin.controller;
 
+import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.service.LoginService;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -9,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import javax.servlet.http.Cookie;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -25,7 +25,7 @@ public class JobInfoControllerTest extends AbstractSpringMvcTest {
         post("/login")
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .param("userName", "admin")
-            .param("password", "123456")
+            .param("password", "enjoy_password")
     ).andReturn();
     cookie = ret.getResponse().getCookie(LoginService.LOGIN_IDENTITY_KEY);
   }
@@ -45,6 +45,10 @@ public class JobInfoControllerTest extends AbstractSpringMvcTest {
     ).andReturn();
 
     logger.info(ret.getResponse().getContentAsString());
+
+    XxlJobUser loginUser = (XxlJobUser) ret.getRequest().getAttribute(LoginService.LOGIN_IDENTITY_KEY);
+    System.out.printf(loginUser.getUsername());
+
   }
 
 }

@@ -1,9 +1,13 @@
 package com.xxl.job.admin.controller;
 
 import com.xxl.job.admin.controller.annotation.PermissionLimit;
+import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.service.LoginService;
 import com.xxl.job.admin.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -36,11 +37,12 @@ public class IndexController {
 
 
 	@RequestMapping("/")
-	public String index(Model model) {
+	public String index(Model model, HttpServletRequest request) {
 
+		XxlJobUser loginUser = (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY);
 		Map<String, Object> dashboardMap = xxlJobService.dashboardInfo();
+		dashboardMap.put("user", loginUser);
 		model.addAllAttributes(dashboardMap);
-
 		return "index";
 	}
 
@@ -58,6 +60,7 @@ public class IndexController {
 			modelAndView.setView(new RedirectView("/",true,false));
 			return modelAndView;
 		}
+
 		return new ModelAndView("login");
 	}
 	
@@ -77,12 +80,13 @@ public class IndexController {
 	}
 	
 	@RequestMapping("/help")
-	public String help() {
+	public String help(HttpServletRequest request, Model model) {
 
 		/*if (!PermissionInterceptor.ifLogin(request)) {
 			return "redirect:/toLogin";
 		}*/
 
+		model.addAttribute("user", (XxlJobUser) request.getAttribute(LoginService.LOGIN_IDENTITY_KEY));
 		return "help";
 	}
 
